@@ -77,27 +77,36 @@ async function teamBuilder(){
                 const engineerPrompt = await inquirer.prompt(questionEngineer);
                 let git = engineerPrompt.github;
                 let engineer = await  new Engineer(name,employee_id,email,git);
-                let stall = await employeeRoster.push(engineer)
+                var stall = await employeeRoster.push(engineer);
                 break;
 
             case "Manager":
                 const managerPrompt = await inquirer.prompt(questionManager);
                 let office = managerPrompt.officeNumber; 
                 let manager = await  new Manager(name,employee_id,email,office);
-                let stall = await employeeRoster.push(manager);
+                var stall = await employeeRoster.push(manager);
                 break;
 
             case "Intern":
                 const internPrompt = await inquirer.prompt(questionIntern);
                 let school = internPrompt.school;
                 let intern = await new Intern(name, employee_id,email,school);
-                let stall = await employeeRoster.push(intern);
+                var stall = await employeeRoster.push(intern);
                 break;
         }
         console.log('--------------------------------------------------------------------------');
         // collect name, id, email an generate 
 
     }
+    console.log('Completed Roster');
+    return employeeRoster;
 }
 
+async function teamBuilder(roster){
+    
+}
+
+
+
 teamBuilder();
+
