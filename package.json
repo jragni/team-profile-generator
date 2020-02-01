@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/jragni/team-profile-generator#readme",
   "dependencies": {
+    "html-pdf": "^2.2.0",
     "inquirer": "^7.0.4",
     "jest": "^25.1.0"
   }

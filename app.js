@@ -3,8 +3,7 @@ const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 const Manager = require('./lib/Manager');
 const Employee = require('./lib/Employee');
-
-
+const fs = require('fs');
 let questionOne = [
     {
         type: 'list',
@@ -61,7 +60,7 @@ async function teamBuilder(){
     // Ask how many employees there are
     const firstQuestion = await inquirer.prompt(questionOne);
     const numberOfEmployee = await parseInt(firstQuestion.employeeCount);
-    const employeeRoster = []
+    const employeeRoster = [];
     for( let i = 0; i < numberOfEmployee; i++ ){
         // gather information
         const secondQuestion = await inquirer.prompt(questionTwo);
@@ -93,18 +92,61 @@ async function teamBuilder(){
                 let intern = await new Intern(name, employee_id,email,school);
                 var stall = await employeeRoster.push(intern);
                 break;
+            case "Employee":
+                let employee = await  new Employee(name,employee_id,email);             
+                var stall = await employeeRoster.push(employee);
+                    break;
         }
         console.log('--------------------------------------------------------------------------');
         // collect name, id, email an generate 
 
     }
     console.log('Completed Roster');
-    return employeeRoster;
-}
 
-async function teamBuilder(roster){
-    
-}
+    // create an HTML file for the team
+    let html =`<!DOCTYPE html><html lang='en'>
+        <head>
+            <title> Team Generator</title>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+            <!-- Bootstrap CSS -->
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"></link>
+        <head>
+        <body>
+            <header>
+                <div class='container'>
+                    <div class='jumbotron text-center'>
+                    <h1> My Team </h1>
+                    </div>
+                </div>
+            </header>
+            <main class="container"><div class="row">`;
+
+    for(let i = 0; i<numberOfEmployee;i++){
+        html += '<div class="card" style="width: 15rem; margin:25px" > <div class="card-body"><h1>' + await employeeRoster[i].getName() + '</h1>' 
+            +'<h2>'+ employeeRoster[i].getRole() + '</h2>'+ '<h3>'+ await employeeRoster[i].getId()+'</h3>';
+
+            if(employeeRoster[i].getRole() === "Engineer" ){
+                html+=  '<h3> Github: '+employeeRoster[i].getGithub() +'</h3>'
+            }
+            else if(employeeRoster[i].getRole() === "Intern" ){
+                html+= '<h3>University: '+ employeeRoster[i].getSchool() + '</h3>'
+            }
+            else if(employeeRoster[i].getRole() === "Manager" ){
+                html+= '<h3> Office Number: ' +employeeRoster[i].getOfficeNumber() +'</h3>';
+            }
+            else{}
+           html +='</div></div>';
+    }
+    //end HTML
+    html += `</div></main>
+            </body>
+            </html>` ;
+
+    fs.appendFile('test.html',html,(err)=>{if(err){throw(err)}})
+}  
+
 
 
 
