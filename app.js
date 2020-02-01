@@ -4,12 +4,14 @@ const Intern = require('./lib/Intern');
 const Manager = require('./lib/Manager');
 const Employee = require('./lib/Employee');
 const fs = require('fs');
+const pdf = require('html-pdf');
+
 let questionOne = [
     {
         type: 'list',
         name: 'employeeCount',
         message: 'How big is your team?',
-        choices: ['1','2','3','4','5','6']    
+        choices: ['1','2','3','4','5']
     }
 ];
 
@@ -124,17 +126,19 @@ async function teamBuilder(){
             <main class="container"><div class="row">`;
 
     for(let i = 0; i<numberOfEmployee;i++){
-        html += '<div class="card" style="width: 15rem; margin:25px" > <div class="card-body"><h1>' + await employeeRoster[i].getName() + '</h1>' 
-            +'<h2>'+ employeeRoster[i].getRole() + '</h2>'+ '<h3>'+ await employeeRoster[i].getId()+'</h3>';
+        html += '<div class="card col-md" style="width:20%; margin:25px" > <div class="card-body"><h1>' + await employeeRoster[i].getName() + '</h1>' 
+            +'<p>'+ employeeRoster[i].getRole() + '</p>'
+            +'<p>' + employeeRoster[i].getEmail() + '</p>'
+            + '<p> id: '+ await employeeRoster[i].getId()+'</p>';
 
             if(employeeRoster[i].getRole() === "Engineer" ){
-                html+=  '<h3> Github: '+employeeRoster[i].getGithub() +'</h3>'
+                html+=  '<p> Github: '+employeeRoster[i].getGithub() +'</p>'
             }
             else if(employeeRoster[i].getRole() === "Intern" ){
-                html+= '<h3>University: '+ employeeRoster[i].getSchool() + '</h3>'
+                html+= '<p>University: '+ employeeRoster[i].getSchool() + '</p>'
             }
             else if(employeeRoster[i].getRole() === "Manager" ){
-                html+= '<h3> Office Number: ' +employeeRoster[i].getOfficeNumber() +'</h3>';
+                html+= '<p> Office Number: ' +employeeRoster[i].getOfficeNumber() +'</p>';
             }
             else{}
            html +='</div></div>';
@@ -144,7 +148,11 @@ async function teamBuilder(){
             </body>
             </html>` ;
 
-    fs.appendFile('test.html',html,(err)=>{if(err){throw(err)}})
+    fs.appendFile('TeamPage.html',html,(err)=>{if(err){throw(err)}})
+    var solution = await pdf.create(html, {format:'Letter'}).toFile('./teamPreview.pdf', (err,res)=>{
+        if(err) return console.log(err);
+    })
+    console.log('Complete...')
 }  
 
 
